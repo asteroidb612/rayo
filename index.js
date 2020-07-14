@@ -8,6 +8,10 @@ import Mplex from "libp2p-mplex";
 import Boostrap from "libp2p-bootstrap";
 import { Elm } from "./src/Main.elm";
 
+//My protocol
+const RayoProtocol = require("./src/chat");
+const Gossipsub = require("libp2p-gossipsub");
+
 Elm.Main.init({
   node: document.querySelector("#elm"),
 });
@@ -29,6 +33,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       connEncryption: [NOISE, Secio],
       streamMuxer: [Mplex],
       peerDiscovery: [Boostrap],
+      pubsub: Gossipsub,
     },
     config: {
       peerDiscovery: {
@@ -79,4 +84,22 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Export libp2p to the window so you can play with the API
   window.libp2p = libp2p;
+  var currentSeed = 10;
+  log(`the number has been updated to ${currentSeed}`);
+
+  var rayoProtocol = new RayoProtocol(
+    libp2p,
+    RayoProtocol.TOPIC,
+    ({ updatedSeed }) => {
+      currentSeed = updatedSeed;
+      log(`the number has been updated to ${updatedSeed}`);
+    }
+  );
+
+  document
+    .getElementById("increase")
+    .addEventListener("click", async function () {
+      await rayoProtocol.send(5);
+    });
+  rayoProtocol.onStart();
 });
