@@ -1,5 +1,7 @@
 "use strict";
 
+import { Elm } from "./src/Main.elm";
+
 // Libp2p Core
 const Libp2p = require("libp2p");
 // Transports
@@ -18,6 +20,8 @@ const Bootstrap = require("libp2p-bootstrap");
 const KadDHT = require("libp2p-kad-dht");
 // PubSub implementation
 const Gossipsub = require("libp2p-gossipsub");
+
+const app = Elm.Main.init({ node: document.getElementById("elm") });
 
 async function main() {
   // Create the Node
@@ -70,6 +74,8 @@ async function main() {
     "\n"
   );
 
+  var currentNumber = 0;
+
   // Create our PubsubChat client
   const pubsubChat = new PubsubChat(
     libp2p,
@@ -85,6 +91,9 @@ async function main() {
           message.created
         ).toLocaleTimeString()}): ${message.data}`
       );
+    },
+    ({ seed }) => {
+      app.ports.changes.send(seed);
     }
   );
 
@@ -101,6 +110,14 @@ async function main() {
       console.error("Could not publish chat", err);
     }
   }, 1000);
+
+  setInterval(async () => {
+    try {
+      await pubsubChat.sendNumber();
+    } catch (err) {
+      console.error("Could not publish number", err);
+    }
+  }, 5000 + 5000 * Math.random());
 }
 
 main();

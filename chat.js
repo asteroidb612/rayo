@@ -1,4 +1,4 @@
-const protons = require('protons')
+const protons = require("protons");
 
 const { Request, Stats } = protons(`
 message Request {
@@ -6,12 +6,18 @@ message Request {
     SEND_MESSAGE = 0;
     UPDATE_PEER = 1;
     STATS = 2;
+    NEW_NUMBER = 3;
   }
 
   required Type type = 1;
   optional SendMessage sendMessage = 2;
   optional UpdatePeer updatePeer = 3;
   optional Stats stats = 4;
+  optional NewNumber newNumber = 5;
+}
+
+message NewNumber {
+  required int64 seed = 1;
 }
 
 message SendMessage {
@@ -34,7 +40,7 @@ message Stats {
   repeated bytes connectedPeers = 1;
   optional NodeType nodeType = 2;
 }
-`)
+`);
 
 class Chat {
   /**
@@ -43,42 +49,41 @@ class Chat {
    * @param {string} topic The topic to subscribe to
    * @param {function(Message)} messageHandler Called with every `Message` received on `topic`
    */
-  constructor(libp2p, topic, messageHandler) {
-    this.libp2p = libp2p
-    this.topic = topic
-    this.messageHandler = messageHandler
-    this.userHandles = new Map([
-      [libp2p.peerId.toB58String(), 'Me']
-    ])
+  constructor(libp2p, topic, messageHandler, numberHandler) {
+    this.libp2p = libp2p;
+    this.topic = topic;
+    this.messageHandler = messageHandler;
+    this.numberHandler = numberHandler;
+    this.userHandles = new Map([[libp2p.peerId.toB58String(), "Me"]]);
 
-    this.connectedPeers = new Set()
-    this.libp2p.connectionManager.on('peer:connect', (connection) => {
-      if (this.connectedPeers.has(connection.remotePeer.toB58String())) return
-      this.connectedPeers.add(connection.remotePeer.toB58String())
-      this.sendStats(Array.from(this.connectedPeers))
-    })
-    this.libp2p.connectionManager.on('peer:disconnect', (connection) => {
+    this.connectedPeers = new Set();
+    this.libp2p.connectionManager.on("peer:connect", (connection) => {
+      if (this.connectedPeers.has(connection.remotePeer.toB58String())) return;
+      this.connectedPeers.add(connection.remotePeer.toB58String());
+      this.sendStats(Array.from(this.connectedPeers));
+    });
+    this.libp2p.connectionManager.on("peer:disconnect", (connection) => {
       if (this.connectedPeers.delete(connection.remotePeer.toB58String())) {
-        this.sendStats(Array.from(this.connectedPeers))
+        this.sendStats(Array.from(this.connectedPeers));
       }
-    })
+    });
 
     // Join if libp2p is already on
-    if (this.libp2p.isStarted()) this.join()
+    if (this.libp2p.isStarted()) this.join();
   }
 
   /**
    * Handler that is run when `this.libp2p` starts
    */
-  onStart () {
-    this.join()
+  onStart() {
+    this.join();
   }
 
   /**
    * Handler that is run when `this.libp2p` stops
    */
-  onStop () {
-    this.leave()
+  onStop() {
+    this.leave();
   }
 
   /**
@@ -86,37 +91,40 @@ class Chat {
    * forwarded to `messageHandler`
    * @private
    */
-  join () {
+  join() {
     this.libp2p.pubsub.subscribe(this.topic, (message) => {
       try {
-        const request = Request.decode(message.data)
+        const request = Request.decode(message.data);
         switch (request.type) {
           case Request.Type.UPDATE_PEER:
-            const newHandle = request.updatePeer.userHandle.toString()
-            console.info(`System: ${message.from} is now ${newHandle}.`)
-            this.userHandles.set(message.from, newHandle)
-            break
+            const newHandle = request.updatePeer.userHandle.toString();
+            console.info(`System: ${message.from} is now ${newHandle}.`);
+            this.userHandles.set(message.from, newHandle);
+            break;
           case Request.Type.SEND_MESSAGE:
             this.messageHandler({
               from: message.from,
-              message: request.sendMessage
-            })
-            break
+              message: request.sendMessage,
+            });
+            break;
+          case Request.Type.NEW_NUMBER:
+            this.numberHandler(request.newNumber);
+            break;
           default:
-            // Do nothing
+          // Do nothing
         }
       } catch (err) {
-        console.error(err)
+        console.error(err);
       }
-    })
+    });
   }
 
   /**
    * Unsubscribes from `Chat.topic`
    * @private
    */
-  leave () {
-    this.libp2p.pubsub.unsubscribe(this.topic)
+  leave() {
+    this.libp2p.pubsub.unsubscribe(this.topic);
   }
 
   /**
@@ -126,17 +134,17 @@ class Chat {
    * @param {Buffer|string} input Text submitted by the user
    * @returns {boolean} Whether or not there was a command
    */
-  checkCommand (input) {
-    const str = input.toString()
-    if (str.startsWith('/')) {
-      const args = str.slice(1).split(' ')
+  checkCommand(input) {
+    const str = input.toString();
+    if (str.startsWith("/")) {
+      const args = str.slice(1).split(" ");
       switch (args[0]) {
-        case 'name':
-          this.updatePeer(args[1])
-          return true
+        case "name":
+          this.updatePeer(args[1]);
+          return true;
       }
     }
-    return false
+    return false;
   }
 
   /**
@@ -144,18 +152,18 @@ class Chat {
    * to the provided `name`.
    * @param {Buffer|string} name Username to change to
    */
-  async updatePeer (name) {
+  async updatePeer(name) {
     const msg = Request.encode({
       type: Request.Type.UPDATE_PEER,
       updatePeer: {
-        userHandle: Buffer.from(name)
-      }
-    })
+        userHandle: Buffer.from(name),
+      },
+    });
 
     try {
-      await this.libp2p.pubsub.publish(this.topic, msg)
+      await this.libp2p.pubsub.publish(this.topic, msg);
     } catch (err) {
-      console.error('Could not publish name change', err)
+      console.error("Could not publish name change", err);
     }
   }
 
@@ -163,19 +171,19 @@ class Chat {
    * Sends the updated stats to the pubsub network
    * @param {Array<Buffer>} connectedPeers
    */
-  async sendStats (connectedPeers) {
+  async sendStats(connectedPeers) {
     const msg = Request.encode({
       type: Request.Type.STATS,
       stats: {
         connectedPeers,
-        nodeType: Stats.NodeType.NODEJS
-      }
-    })
+        nodeType: Stats.NodeType.NODEJS,
+      },
+    });
 
     try {
-      await this.libp2p.pubsub.publish(this.topic, msg)
+      await this.libp2p.pubsub.publish(this.topic, msg);
     } catch (err) {
-      console.error('Could not publish stats update', err)
+      console.error("Could not publish stats update", err);
     }
   }
 
@@ -184,20 +192,33 @@ class Chat {
    * @throws
    * @param {Buffer|string} message The chat message to send
    */
-  async send (message) {
+  async send(message) {
     const msg = Request.encode({
       type: Request.Type.SEND_MESSAGE,
       sendMessage: {
         id: (~~(Math.random() * 1e9)).toString(36) + Date.now(),
         data: Buffer.from(message),
-        created: Date.now()
-      }
-    })
+        created: Date.now(),
+      },
+    });
 
-    await this.libp2p.pubsub.publish(this.topic, msg)
+    await this.libp2p.pubsub.publish(this.topic, msg);
+  }
+
+  async sendNumber() {
+    const settingNumber = Math.round(Math.random() * 10);
+    console.log(`Setting number to ${settingNumber}`);
+    const msg = Request.encode({
+      type: Request.Type.NEW_NUMBER,
+      newNumber: {
+        seed: settingNumber,
+      },
+    });
+
+    await this.libp2p.pubsub.publish(this.topic, msg);
   }
 }
 
-module.exports = Chat
-module.exports.TOPIC = '/libp2p/example/chat/1.0.0'
-module.exports.CLEARLINE = '\033[1A'
+module.exports = Chat;
+module.exports.TOPIC = "/libp2p/example/chat/1.0.0";
+module.exports.CLEARLINE = "\033[1A";
