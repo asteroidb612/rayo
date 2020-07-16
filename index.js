@@ -1,7 +1,6 @@
 "use strict";
 
-import { Elm as Num } from "./src/Main.elm";
-import { Elm as Drag } from "./src/Drag.elm";
+import { Elm } from "./src/Main.elm";
 
 // Libp2p Core
 const Libp2p = require("libp2p");
@@ -22,8 +21,7 @@ const KadDHT = require("libp2p-kad-dht");
 // PubSub implementation
 const Gossipsub = require("libp2p-gossipsub");
 
-const app = Num.Main.init({ node: document.getElementById("elm") });
-const drag = Drag.Drag.init({ node: document.getElementById("drag") });
+const app = Elm.Main.init({ node: document.getElementById("elm") });
 
 async function main() {
   // Create the Node
