@@ -26,6 +26,7 @@ import Duration
 import Frame3d
 import Html exposing (Html)
 import Html.Events exposing (onClick)
+import Json.Encode exposing (Value)
 import Length
 import Mass
 import Physics.Body as Body exposing (Body)
@@ -69,6 +70,10 @@ type Msg
     | MouseMove { x : Float, y : Float, z : Float }
     | MouseUp { x : Float, y : Float, z : Float }
     | NewNumber Float
+    | Roll
+
+
+port roll : () -> Cmd msg
 
 
 port changes : (Float -> msg) -> Sub msg
@@ -103,6 +108,9 @@ init _ =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        Roll ->
+            ( model, roll () )
+
         NewNumber i ->
             ( { model | world = worldBuilder i }, Cmd.none )
 
@@ -270,6 +278,8 @@ view { settings, fps, world, camera, maybeRaycastResult } =
             settings
             [ Html.button [ onClick Restart ]
                 [ Html.text "Restart the demo" ]
+            , Html.button [ onClick Roll ]
+                [ Html.text "Roll" ]
             ]
         , if settings.showFpsMeter then
             Fps.view fps (List.length (World.bodies world))

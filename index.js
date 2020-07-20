@@ -111,13 +111,18 @@ async function main() {
     }
   }, 1000);
 
-  setInterval(async () => {
+  async function roll() {
     try {
       await pubsubChat.sendNumber();
     } catch (err) {
       console.error("Could not publish number", err);
     }
-  }, 5000 + 5000 * Math.random());
+  }
+
+  //Roll at random intervals
+  setInterval(roll, 10000 + 5000 * Math.random());
+  // Roll on click
+  app.ports.roll.subscribe(roll);
 }
 
 main();
