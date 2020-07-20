@@ -31,6 +31,7 @@ import Length
 import Mass
 import Physics.Body as Body exposing (Body)
 import Physics.Constraint as Constraint
+import Physics.Material as Material
 import Physics.World as World exposing (RaycastResult, World)
 import Plane3d
 import Point3d
@@ -126,7 +127,7 @@ update msg model =
                 | fps = Fps.update dt model.fps
                 , world =
                     model.world
-                        |> World.simulate (Duration.seconds (1 / 60))
+                        |> World.simulate (Duration.seconds (2 / 60))
               }
             , Cmd.none
             )
@@ -302,18 +303,18 @@ worldBuilder seed =
         |> World.add
             (box 1
                 |> Body.rotateAround Axis3d.y (Angle.radians (-pi / 5))
-                |> Body.moveTo (Point3d.meters 0 0 2)
+                |> Body.moveTo (Point3d.meters 0 0 (2 + 1))
             )
         |> World.add
             (box 2
-                |> Body.moveTo (Point3d.meters 0.5 0 seed)
+                |> Body.moveTo (Point3d.meters 0.5 0 (1 + seed))
             )
         |> World.add
             (box 3
                 |> Body.rotateAround
                     (Axis3d.through Point3d.origin (Direction3d.unsafe { x = 0.7071, y = 0.7071, z = 0 }))
                     (Angle.radians (pi / 5))
-                |> Body.moveTo (Point3d.meters -1.2 0 5)
+                |> Body.moveTo (Point3d.meters -1.2 0 (1 + 5))
             )
 
 
@@ -331,6 +332,7 @@ floor =
     { id = Floor, meshes = Meshes.fromTriangles [] }
         |> Body.plane
         |> Body.moveTo (Point3d.fromMeters floorOffset)
+        |> Body.withMaterial (Material.custom { friction = 0.1, bounciness = 0.5 })
 
 
 {-| One of the boxes on the scene
@@ -351,6 +353,7 @@ box id =
         , meshes = Meshes.fromTriangles (Meshes.block block3d)
         }
         |> Body.withBehavior (Body.dynamic (Mass.kilograms 10))
+        |> Body.withMaterial (Material.custom { friction = 0.1, bounciness = 0.5 })
 
 
 {-| An empty body with zero mass, rendered as a sphere.
