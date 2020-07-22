@@ -36,6 +36,7 @@ import Physics.World as World exposing (RaycastResult, World)
 import Plane3d
 import Point3d
 import Sphere3d
+import WebGL.Texture exposing (Texture, load)
 
 
 {-| Each body should have a unique id,
@@ -59,6 +60,7 @@ type alias Model =
     , settings : Settings
     , camera : Camera
     , maybeRaycastResult : Maybe (RaycastResult Data)
+    , maybeTexture : Maybe Texture
     }
 
 
@@ -101,6 +103,7 @@ init _ =
                 , to = { x = 0, y = 0, z = 0 }
                 }
       , maybeRaycastResult = Nothing
+      , maybeTexture = Nothing
       }
     , Events.measureSize Resize
     )
@@ -261,33 +264,39 @@ subscriptions _ =
 
 
 view : Model -> Html Msg
-view { settings, fps, world, camera, maybeRaycastResult } =
-    Html.div
-        [ Events.onMouseDown camera MouseDown
-        , Events.onMouseMove camera MouseMove
-        , Events.onMouseUp camera MouseUp
-        ]
-        [ Scene.view
-            { settings = settings
-            , world = world
-            , camera = camera
-            , meshes = .meshes
-            , maybeRaycastResult = maybeRaycastResult
-            , floorOffset = floorOffset
-            }
-        , Settings.view ForSettings
-            settings
-            [ Html.button [ onClick Restart ]
-                [ Html.text "Restart the demo" ]
-            , Html.button [ onClick Roll ]
-                [ Html.text "Roll" ]
-            ]
-        , if settings.showFpsMeter then
-            Fps.view fps (List.length (World.bodies world))
+view { settings, fps, world, camera, maybeRaycastResult, maybeTexture } =
+    case maybeTexture of
+        Nothing ->
+            Html.text "Loading texture"
 
-          else
-            Html.text ""
-        ]
+        Just texture ->
+            Html.div
+                [ Events.onMouseDown camera MouseDown
+                , Events.onMouseMove camera MouseMove
+                , Events.onMouseUp camera MouseUp
+                ]
+                [ Scene.view
+                    { settings = settings
+                    , world = world
+                    , camera = camera
+                    , meshes = .meshes
+                    , maybeRaycastResult = maybeRaycastResult
+                    , floorOffset = floorOffset
+                    , texture = texture
+                    }
+                , Settings.view ForSettings
+                    settings
+                    [ Html.button [ onClick Restart ]
+                        [ Html.text "Restart the demo" ]
+                    , Html.button [ onClick Roll ]
+                        [ Html.text "Roll" ]
+                    ]
+                , if settings.showFpsMeter then
+                    Fps.view fps (List.length (World.bodies world))
+
+                  else
+                    Html.text ""
+                ]
 
 
 initialWorld : World Data

@@ -14,6 +14,7 @@ import Common.Meshes exposing (Attributes)
 import Math.Matrix4 exposing (Mat4)
 import Math.Vector3 exposing (Vec3)
 import WebGL exposing (Shader)
+import WebGL.Texture exposing (Texture)
 
 
 type alias Uniforms =
@@ -22,6 +23,7 @@ type alias Uniforms =
     , transform : Mat4
     , color : Vec3
     , lightDirection : Vec3
+    , texture : Texture
     }
 
 

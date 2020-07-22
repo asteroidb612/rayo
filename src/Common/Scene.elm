@@ -21,6 +21,7 @@ import Physics.Coordinates exposing (BodyCoordinates, WorldCoordinates)
 import Physics.World as World exposing (RaycastResult, World)
 import Point3d exposing (Point3d)
 import WebGL exposing (Entity)
+import WebGL.Texture exposing (Texture)
 
 
 type alias Params a =
@@ -34,11 +35,12 @@ type alias Params a =
         , y : Float
         , z : Float
         }
+    , texture : Texture
     }
 
 
 view : Params a -> Html msg
-view { settings, world, floorOffset, camera, maybeRaycastResult, meshes } =
+view { settings, world, floorOffset, camera, maybeRaycastResult, meshes, texture } =
     let
         lightDirection =
             Vec3.normalize (Vec3.vec3 -1 -1 -1)
@@ -55,6 +57,7 @@ view { settings, world, floorOffset, camera, maybeRaycastResult, meshes } =
                     (Vec3.fromRecord floorOffset)
                     Vec3.k
                     lightDirection
+            , texture = texture
             }
     in
     WebGL.toHtmlWith
@@ -98,11 +101,12 @@ type alias SceneParams a =
     , shadow : Mat4
     , maybeRaycastResult : Maybe (RaycastResult a)
     , meshes : a -> Meshes
+    , texture : Texture
     }
 
 
 addBodyEntities : SceneParams a -> Body a -> List Entity -> List Entity
-addBodyEntities ({ meshes, lightDirection, shadow, camera, debugWireframes, debugCenterOfMass, maybeRaycastResult } as sceneParams) body entities =
+addBodyEntities ({ meshes, lightDirection, shadow, camera, debugWireframes, debugCenterOfMass, maybeRaycastResult, texture } as sceneParams) body entities =
     let
         transform =
             Frame3d.toMat4 (Body.frame body)
@@ -149,6 +153,7 @@ addBodyEntities ({ meshes, lightDirection, shadow, camera, debugWireframes, debu
                         , color = color
                         , lightDirection = lightDirection
                         , transform = transform
+                        , texture = texture
                         }
                     )
 
@@ -163,6 +168,7 @@ addBodyEntities ({ meshes, lightDirection, shadow, camera, debugWireframes, debu
                         , color = color
                         , lightDirection = lightDirection
                         , transform = transform
+                        , texture = texture
                         }
                     )
            )
@@ -180,6 +186,7 @@ addBodyEntities ({ meshes, lightDirection, shadow, camera, debugWireframes, debu
                         , color = Vec3.vec3 0.25 0.25 0.25
                         , lightDirection = lightDirection
                         , transform = Mat4.mul shadow transform
+                        , texture = texture
                         }
                     )
            )
@@ -188,7 +195,7 @@ addBodyEntities ({ meshes, lightDirection, shadow, camera, debugWireframes, debu
 {-| Render a collision point for the purpose of debugging
 -}
 addContactIndicator : SceneParams a -> Point3d Meters WorldCoordinates -> List Entity -> List Entity
-addContactIndicator { lightDirection, camera } point tail =
+addContactIndicator { lightDirection, camera, texture } point tail =
     WebGL.entity
         Shaders.vertex
         Shaders.fragment
@@ -198,6 +205,7 @@ addContactIndicator { lightDirection, camera } point tail =
         , color = Vec3.vec3 1 0 0
         , lightDirection = lightDirection
         , transform = Frame3d.toMat4 (Frame3d.atPoint point)
+        , texture = texture
         }
         :: tail
 
@@ -205,7 +213,7 @@ addContactIndicator { lightDirection, camera } point tail =
 {-| Render a normal for the purpose of debugging
 -}
 addNormalIndicator : SceneParams a -> Mat4 -> { point : Point3d Meters BodyCoordinates, normal : Direction3d BodyCoordinates } -> List Entity -> List Entity
-addNormalIndicator { lightDirection, camera } transform { normal, point } tail =
+addNormalIndicator { lightDirection, camera, texture } transform { normal, point } tail =
     WebGL.entity
         Shaders.vertex
         Shaders.fragment
@@ -221,5 +229,6 @@ addNormalIndicator { lightDirection, camera } transform { normal, point } tail =
                         |> Mat4.makeTranslate
                         |> Mat4.mul transform
                     )
+        , texture = texture
         }
         :: tail
