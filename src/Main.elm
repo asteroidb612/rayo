@@ -36,7 +36,8 @@ import Physics.World as World exposing (RaycastResult, World)
 import Plane3d
 import Point3d
 import Sphere3d
-import WebGL.Texture exposing (Texture, load)
+import Task
+import WebGL.Texture as Texture exposing (Texture, load)
 
 
 {-| Each body should have a unique id,
@@ -74,6 +75,8 @@ type Msg
     | MouseUp { x : Float, y : Float, z : Float }
     | NewNumber Float
     | Roll
+    | TextureLoaded Texture
+    | TextureLoadFail
 
 
 port roll : () -> Cmd msg
@@ -105,13 +108,31 @@ init _ =
       , maybeRaycastResult = Nothing
       , maybeTexture = Nothing
       }
-    , Events.measureSize Resize
+    , Cmd.batch
+        [ Events.measureSize Resize
+        , Texture.load "d6.png"
+            |> Task.attempt
+                (\result ->
+                    case result of
+                        Err _ ->
+                            TextureLoadFail
+
+                        Ok texture ->
+                            TextureLoaded texture
+                )
+        ]
     )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        TextureLoadFail ->
+            ( model, Cmd.none )
+
+        TextureLoaded texture ->
+            ( { model | maybeTexture = Just texture }, Cmd.none )
+
         Roll ->
             ( model, roll () )
 

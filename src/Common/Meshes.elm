@@ -123,18 +123,18 @@ block block3d =
         v7 =
             transform -x y z
     in
-    [ facet v3 v2 v1 (vec2 0 1) (vec2 1 0) (vec2 0 0)
-    , facet v1 v0 v3 (vec2 0 1) (vec2 1 0) (vec2 0 0)
-    , facet v4 v5 v6 (vec2 0 1) (vec2 1 0) (vec2 0 0)
-    , facet v6 v7 v4 (vec2 0 1) (vec2 1 0) (vec2 0 0)
-    , facet v5 v4 v0 (vec2 0 1) (vec2 1 0) (vec2 0 0)
-    , facet v0 v1 v5 (vec2 0 1) (vec2 1 0) (vec2 0 0)
-    , facet v2 v3 v7 (vec2 0 1) (vec2 1 0) (vec2 0 0)
-    , facet v7 v6 v2 (vec2 0 1) (vec2 1 0) (vec2 0 0)
-    , facet v0 v4 v7 (vec2 0 1) (vec2 1 0) (vec2 0 0)
-    , facet v7 v3 v0 (vec2 0 1) (vec2 1 0) (vec2 0 0)
-    , facet v1 v2 v6 (vec2 0 1) (vec2 1 0) (vec2 0 0)
-    , facet v6 v5 v1 (vec2 0 1) (vec2 1 0) (vec2 0 0)
+    [ facet v3 v2 v1 (vec2 1 1) (vec2 1 0) (vec2 0 0)
+    , facet v1 v0 v3 (vec2 0 0) (vec2 0 1) (vec2 1 1)
+    , facet v4 v5 v6 (vec2 1 1) (vec2 1 0) (vec2 0 0)
+    , facet v6 v7 v4 (vec2 0 0) (vec2 0 1) (vec2 1 1)
+    , facet v5 v4 v0 (vec2 1 1) (vec2 1 0) (vec2 0 0)
+    , facet v0 v1 v5 (vec2 0 0) (vec2 0 1) (vec2 1 1)
+    , facet v2 v3 v7 (vec2 1 1) (vec2 1 0) (vec2 0 0)
+    , facet v7 v6 v2 (vec2 0 0) (vec2 0 1) (vec2 1 1)
+    , facet v0 v4 v7 (vec2 1 1) (vec2 1 0) (vec2 0 0)
+    , facet v7 v3 v0 (vec2 0 0) (vec2 0 1) (vec2 1 1)
+    , facet v1 v2 v6 (vec2 1 1) (vec2 1 0) (vec2 0 0)
+    , facet v6 v5 v1 (vec2 0 0) (vec2 0 1) (vec2 1 1)
     ]
 
 
