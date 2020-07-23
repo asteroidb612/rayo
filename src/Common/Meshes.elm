@@ -122,19 +122,42 @@ block block3d =
 
         v7 =
             transform -x y z
+
+        t1 a i j =
+            a
+                (vec2 (0.666 + i * 0.333) (0.75 + j * 0.25))
+                (vec2 (0.666 + i * 0.333) (0.5 + j * 0.25))
+                (vec2 (0.333 + i * 0.333) (0.5 + j * 0.25))
+
+        t2 a i j =
+            a
+                (vec2 (0.333 + i * 0.333) (0.5 + j * 0.25))
+                (vec2 (0.333 + i * 0.333) (0.75 + j * 0.25))
+                (vec2 (0.666 + i * 0.333) (0.75 + j * 0.25))
     in
-    [ facet v3 v2 v1 (vec2 1 1) (vec2 1 0) (vec2 0 0)
-    , facet v1 v0 v3 (vec2 0 0) (vec2 0 1) (vec2 1 1)
-    , facet v4 v5 v6 (vec2 1 1) (vec2 1 0) (vec2 0 0)
-    , facet v6 v7 v4 (vec2 0 0) (vec2 0 1) (vec2 1 1)
-    , facet v5 v4 v0 (vec2 1 1) (vec2 1 0) (vec2 0 0)
-    , facet v0 v1 v5 (vec2 0 0) (vec2 0 1) (vec2 1 1)
-    , facet v2 v3 v7 (vec2 1 1) (vec2 1 0) (vec2 0 0)
-    , facet v7 v6 v2 (vec2 0 0) (vec2 0 1) (vec2 1 1)
-    , facet v0 v4 v7 (vec2 1 1) (vec2 1 0) (vec2 0 0)
-    , facet v7 v3 v0 (vec2 0 0) (vec2 0 1) (vec2 1 1)
-    , facet v1 v2 v6 (vec2 1 1) (vec2 1 0) (vec2 0 0)
-    , facet v6 v5 v1 (vec2 0 0) (vec2 0 1) (vec2 1 1)
+    [ -- II
+      t1 (facet v3 v2 v1) 0 0
+    , t2 (facet v1 v0 v3) 0 0
+
+    -- I
+    , t1 (facet v4 v5 v6) 0 1
+    , t2 (facet v6 v7 v4) 0 1
+
+    -- 6
+    , t1 (facet v5 v4 v0) 0 -1
+    , t2 (facet v0 v1 v5) 0 -1
+
+    -- 5
+    , t1 (facet v2 v3 v7) 0 -2
+    , t2 (facet v7 v6 v2) 0 -2
+
+    -- 4
+    , t1 (facet v0 v4 v7) -1 0
+    , t2 (facet v7 v3 v0) -1 0
+
+    -- 3
+    , t1 (facet v1 v2 v6) 1 0
+    , t2 (facet v6 v5 v1) 1 0
     ]
 
 

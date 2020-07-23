@@ -110,7 +110,7 @@ init _ =
       }
     , Cmd.batch
         [ Events.measureSize Resize
-        , Texture.load "d6.png"
+        , Texture.loadWith Texture.nonPowerOfTwoOptions "d6net.png"
             |> Task.attempt
                 (\result ->
                     case result of
