@@ -11,6 +11,7 @@ module Common.Meshes exposing
 
 import Block3d exposing (Block3d)
 import Length exposing (Meters, inMeters)
+import Math.Vector2 as Vec2 exposing (Vec2, vec2)
 import Math.Vector3 as Vec3 exposing (Vec3, vec3)
 import Physics.Coordinates exposing (BodyCoordinates)
 import Point3d
@@ -21,6 +22,7 @@ import WebGL exposing (Mesh)
 type alias Attributes =
     { position : Vec3
     , normal : Vec3
+    , coords : Vec2
     }
 
 
@@ -121,18 +123,18 @@ block block3d =
         v7 =
             transform -x y z
     in
-    [ facet v3 v2 v1
-    , facet v1 v0 v3
-    , facet v4 v5 v6
-    , facet v6 v7 v4
-    , facet v5 v4 v0
-    , facet v0 v1 v5
-    , facet v2 v3 v7
-    , facet v7 v6 v2
-    , facet v0 v4 v7
-    , facet v7 v3 v0
-    , facet v1 v2 v6
-    , facet v6 v5 v1
+    [ facet v3 v2 v1 (vec2 0 1) (vec2 1 0) (vec2 0 0)
+    , facet v1 v0 v3 (vec2 0 1) (vec2 1 0) (vec2 0 0)
+    , facet v4 v5 v6 (vec2 0 1) (vec2 1 0) (vec2 0 0)
+    , facet v6 v7 v4 (vec2 0 1) (vec2 1 0) (vec2 0 0)
+    , facet v5 v4 v0 (vec2 0 1) (vec2 1 0) (vec2 0 0)
+    , facet v0 v1 v5 (vec2 0 1) (vec2 1 0) (vec2 0 0)
+    , facet v2 v3 v7 (vec2 0 1) (vec2 1 0) (vec2 0 0)
+    , facet v7 v6 v2 (vec2 0 1) (vec2 1 0) (vec2 0 0)
+    , facet v0 v4 v7 (vec2 0 1) (vec2 1 0) (vec2 0 0)
+    , facet v7 v3 v0 (vec2 0 1) (vec2 1 0) (vec2 0 0)
+    , facet v1 v2 v6 (vec2 0 1) (vec2 1 0) (vec2 0 0)
+    , facet v6 v5 v1 (vec2 0 1) (vec2 1 0) (vec2 0 0)
     ]
 
 
@@ -154,12 +156,12 @@ pyramid halfbase baserise =
         lbb =
             vec3 -halfbase -halfbase baserise
     in
-    [ facet rfb lfb lbb
-    , facet lbb rbb rfb
-    , facet top rfb rbb
-    , facet top lfb rfb
-    , facet top lbb lfb
-    , facet top rbb lbb
+    [ facet rfb lfb lbb (vec2 0 1) (vec2 1 0) (vec2 0 0)
+    , facet lbb rbb rfb (vec2 0 1) (vec2 1 0) (vec2 0 0)
+    , facet top rfb rbb (vec2 0 1) (vec2 1 0) (vec2 0 0)
+    , facet top lfb rfb (vec2 0 1) (vec2 1 0) (vec2 0 0)
+    , facet top lbb lfb (vec2 0 1) (vec2 1 0) (vec2 0 0)
+    , facet top rbb lbb (vec2 0 1) (vec2 1 0) (vec2 0 0)
     ]
 
 
@@ -177,7 +179,7 @@ sphere iterations sphere3d =
     divideSphere iterations radius (octahedron radius)
         |> List.map
             (\( p1, p2, p3 ) ->
-                facet (position p1) (position p2) (position p3)
+                facet (position p1) (position p2) (position p3) (vec2 0 0) (vec2 0 0) (vec2 0 0)
             )
 
 
@@ -234,13 +236,13 @@ octahedron radius =
     ]
 
 
-facet : Vec3 -> Vec3 -> Vec3 -> ( Attributes, Attributes, Attributes )
-facet a b c =
+facet : Vec3 -> Vec3 -> Vec3 -> Vec2 -> Vec2 -> Vec2 -> ( Attributes, Attributes, Attributes )
+facet a b c a_coords b_coords c_coords =
     let
         n =
             Vec3.cross (Vec3.sub b a) (Vec3.sub b c)
     in
-    ( Attributes a n
-    , Attributes b n
-    , Attributes c n
+    ( Attributes a n a_coords
+    , Attributes b n b_coords
+    , Attributes c n c_coords
     )
