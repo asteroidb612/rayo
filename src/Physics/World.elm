@@ -128,10 +128,6 @@ size and maximum velocity.
 -}
 simulate : Duration -> World data -> World data
 simulate dt (Protected world) =
-    let
-        d =
-            Debug.log "Hitting simulate"
-    in
     world
         |> BroadPhase.addContacts
         |> Solver.solve (Duration.inSeconds dt)

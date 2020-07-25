@@ -107,10 +107,6 @@ the body, call this:
 -}
 block : Block3d Meters BodyCoordinates -> data -> Body data
 block block3d =
-    let
-        d =
-            Debug.log "We are in the copided module!"
-    in
     compound [ Shape.block block3d ]
 
 
