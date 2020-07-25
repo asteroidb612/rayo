@@ -1,4 +1,4 @@
-module Common.Settings exposing
+module Visualization.Settings exposing
     ( Settings
     , SettingsMsg
     , settings

@@ -1,4 +1,4 @@
-module Common.Camera exposing
+module Visualization.Camera exposing
     ( Camera
     , camera
     , mouseDirection

@@ -1,4 +1,4 @@
-module Common.Math exposing
+module Visualization.Math exposing
     ( makeRotateKTo
     , makeShadow
     )

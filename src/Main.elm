@@ -15,12 +15,6 @@ import Angle
 import Axis3d
 import Block3d
 import Browser
-import Common.Camera as Camera exposing (Camera)
-import Common.Events as Events
-import Common.Fps as Fps
-import Common.Meshes as Meshes exposing (Meshes)
-import Common.Scene as Scene
-import Common.Settings as Settings exposing (Settings, SettingsMsg, settings)
 import Direction3d
 import Duration
 import Frame3d
@@ -37,6 +31,12 @@ import Plane3d
 import Point3d
 import Sphere3d
 import Task
+import Visualization.Camera as Camera exposing (Camera)
+import Visualization.Events as Events
+import Visualization.Fps as Fps
+import Visualization.Meshes as Meshes exposing (Meshes)
+import Visualization.Scene as Scene
+import Visualization.Settings as Settings exposing (Settings, SettingsMsg, settings)
 import WebGL.Texture as Texture exposing (Texture, load)
 
 

@@ -1,4 +1,4 @@
-module Common.Fps exposing
+module Visualization.Fps exposing
     ( update
     , view
     )

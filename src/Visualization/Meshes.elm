@@ -1,4 +1,4 @@
-module Common.Meshes exposing
+module Visualization.Meshes exposing
     ( Attributes
     , Meshes
     , block
@@ -76,8 +76,81 @@ trianglesToLines triangles =
         triangles
 
 
-block : Block3d Meters BodyCoordinates -> List ( Attributes, Attributes, Attributes )
-block block3d =
+
+--icosahedron : () -> List ( Attributes, Attributes, Attributes )
+
+
+block _ =
+    let
+        -- Thanks https://math.stackexchange.com/questions/141751/icosahedron-coordinates !
+        -- purple
+        v0 =
+            t ( -0.262865, 0.0, 0.425325 )
+
+        v1 =
+            t ( 0.262865, 0.0, 0.425325 )
+
+        v2 =
+            t ( -0.262865, 0.0, -0.425325 )
+
+        v3 =
+            t ( 0.262865, 0.0, -0.425325 )
+
+        -- dark
+        v4 =
+            t ( 0.0, 0.425325, 0.262865 )
+
+        v5 =
+            t ( 0.0, 0.425325, -0.262865 )
+
+        v6 =
+            t ( 0.0, -0.425325, 0.262865 )
+
+        v7 =
+            t ( 0.0, -0.425325, -0.262865 )
+
+        -- light
+        v8 =
+            t ( 0.425325, 0.262865, 0.0 )
+
+        v9 =
+            t ( -0.425325, 0.262865, 0.0 )
+
+        v10 =
+            t ( 0.425325, -0.262865, 0.0 )
+
+        v11 =
+            t ( -0.425325, -0.262865, 0.0 )
+
+        t ( a, b, c ) =
+            vec3 a b c
+    in
+    -- Thanks internet http://rbwhitaker.wikidot.com/index-and-vertex-buffers
+    [ facet v0 v6 v1 (vec2 0 0) (vec2 0 0) (vec2 0 0)
+    , facet v0 v11 v6 (vec2 0 0) (vec2 0 0) (vec2 0 0)
+    , facet v1 v4 v0 (vec2 0 0) (vec2 0 0) (vec2 0 0)
+    , facet v1 v8 v4 (vec2 0 0) (vec2 0 0) (vec2 0 0)
+    , facet v1 v10 v8 (vec2 0 0) (vec2 0 0) (vec2 0 0)
+    , facet v2 v5 v3 (vec2 0 0) (vec2 0 0) (vec2 0 0)
+    , facet v2 v9 v5 (vec2 0 0) (vec2 0 0) (vec2 0 0)
+    , facet v2 v11 v9 (vec2 0 0) (vec2 0 0) (vec2 0 0)
+    , facet v3 v7 v2 (vec2 0 0) (vec2 0 0) (vec2 0 0)
+    , facet v3 v10 v7 (vec2 0 0) (vec2 0 0) (vec2 0 0)
+    , facet v4 v8 v5 (vec2 0 0) (vec2 0 0) (vec2 0 0)
+    , facet v4 v9 v0 (vec2 0 0) (vec2 0 0) (vec2 0 0)
+    , facet v5 v8 v3 (vec2 0 0) (vec2 0 0) (vec2 0 0)
+    , facet v5 v9 v4 (vec2 0 0) (vec2 0 0) (vec2 0 0)
+    , facet v6 v10 v1 (vec2 0 0) (vec2 0 0) (vec2 0 0)
+    , facet v6 v11 v7 (vec2 0 0) (vec2 0 0) (vec2 0 0)
+    , facet v7 v10 v6 (vec2 0 0) (vec2 0 0) (vec2 0 0)
+    , facet v7 v11 v2 (vec2 0 0) (vec2 0 0) (vec2 0 0)
+    , facet v8 v10 v3 (vec2 0 0) (vec2 0 0) (vec2 0 0)
+    , facet v9 v11 v0 (vec2 0 0) (vec2 0 0) (vec2 0 0)
+    ]
+
+
+unblock : Block3d Meters BodyCoordinates -> List ( Attributes, Attributes, Attributes )
+unblock block3d =
     let
         ( sizeX, sizeY, sizeZ ) =
             Block3d.dimensions block3d

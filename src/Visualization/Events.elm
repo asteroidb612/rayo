@@ -1,4 +1,4 @@
-module Common.Events exposing
+module Visualization.Events exposing
     ( measureSize
     , onAnimationFrameDelta
     , onMouseDown
@@ -13,11 +13,11 @@ subscriptions and commands
 
 import Browser.Dom as Dom
 import Browser.Events as Events
-import Common.Camera as Camera exposing (Camera)
 import Html exposing (Attribute)
 import Html.Events as Events
 import Json.Decode as Decode exposing (Decoder)
 import Task
+import Visualization.Camera as Camera exposing (Camera)
 
 
 measureSize : (Float -> Float -> msg) -> Cmd msg

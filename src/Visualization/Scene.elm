@@ -1,10 +1,5 @@
-module Common.Scene exposing (view)
+module Visualization.Scene exposing (view)
 
-import Common.Camera exposing (Camera)
-import Common.Math as Math
-import Common.Meshes as Meshes exposing (Meshes)
-import Common.Settings exposing (Settings)
-import Common.Shaders as Shaders
 import Direction3d exposing (Direction3d)
 import Frame3d
 import Geometry.Interop.LinearAlgebra.Direction3d as Direction3d
@@ -20,6 +15,11 @@ import Physics.Contact as Contact
 import Physics.Coordinates exposing (BodyCoordinates, WorldCoordinates)
 import Physics.World as World exposing (RaycastResult, World)
 import Point3d exposing (Point3d)
+import Visualization.Camera exposing (Camera)
+import Visualization.Math as Math
+import Visualization.Meshes as Meshes exposing (Meshes)
+import Visualization.Settings exposing (Settings)
+import Visualization.Shaders as Shaders
 import WebGL exposing (Entity)
 import WebGL.Texture exposing (Texture)
 
