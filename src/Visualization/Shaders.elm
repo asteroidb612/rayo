@@ -54,6 +54,7 @@ vertex =
 
 fragment : Shader {} Uniforms { vlighting : Float, vcoord : Vec2 }
 fragment =
+    -- gl_FragColor = vec4(vlighting * color, 1.0);
     -- gl_FragColor = texture2D(texture, vcoord);
     [glsl|
         precision mediump float;
@@ -63,7 +64,7 @@ fragment =
         varying vec2 vcoord;
 
         void main () {
-          gl_FragColor = vec4(vlighting * color, 1.0);
+          gl_FragColor = texture2D(texture, vcoord);
         }
     |]
 

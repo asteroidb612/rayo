@@ -88,9 +88,9 @@ block _ =
                 (vec3 a.x a.y a.z)
                 (vec3 b.x b.y b.z)
                 (vec3 c.x c.y c.z)
-                (vec2 0 0)
-                (vec2 0.5 0.5)
-                (vec2 1 1)
+                (vec2 0.5 0.85)
+                (vec2 0.666 0.5)
+                (vec2 0.333 0.5)
         )
         Icosahedron.faces
 
