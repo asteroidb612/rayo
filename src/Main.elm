@@ -110,7 +110,7 @@ init _ =
       }
     , Cmd.batch
         [ Events.measureSize Resize
-        , Texture.loadWith Texture.nonPowerOfTwoOptions "d6net.png"
+        , Texture.loadWith Texture.nonPowerOfTwoOptions "faded.png"
             |> Task.attempt
                 (\result ->
                     case result of
@@ -335,17 +335,20 @@ worldBuilder seed =
                 |> Body.rotateAround Axis3d.y (Angle.radians (-pi / 5))
                 |> Body.moveTo (Point3d.meters 0 0 (2 + 1))
             )
-        |> World.add
-            (box 2
-                |> Body.moveTo (Point3d.meters 0.5 0 (1 + seed))
-            )
-        |> World.add
-            (box 3
-                |> Body.rotateAround
-                    (Axis3d.through Point3d.origin (Direction3d.unsafe { x = 0.7071, y = 0.7071, z = 0 }))
-                    (Angle.radians (pi / 5))
-                |> Body.moveTo (Point3d.meters -1.2 0 (1 + 5))
-            )
+
+
+
+--|> World.add
+--    (box 2
+--        |> Body.moveTo (Point3d.meters 0.5 0 (1 + seed))
+--    )
+--|> World.add
+--    (box 3
+--        |> Body.rotateAround
+--            (Axis3d.through Point3d.origin (Direction3d.unsafe { x = 0.7071, y = 0.7071, z = 0 }))
+--            (Angle.radians (pi / 5))
+--        |> Body.moveTo (Point3d.meters -1.2 0 (1 + 5))
+--    )
 
 
 {-| Shift the floor a little bit down

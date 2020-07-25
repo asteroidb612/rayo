@@ -10,7 +10,7 @@ type alias Point =
 
 
 size =
-    2
+    3
 
 
 v0 =

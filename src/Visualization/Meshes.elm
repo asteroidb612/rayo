@@ -82,15 +82,35 @@ trianglesToLines triangles =
 
 
 block _ =
-    List.map
-        (\( a, b, c ) ->
+    List.indexedMap
+        (\iInt ( a, b, c ) ->
+            let
+                i =
+                    toFloat iInt
+
+                left =
+                    -0.2
+
+                right =
+                    1.2
+
+                mid =
+                    (left + right) / 2
+
+                top =
+                    0 + i * 0.05
+
+                bottom =
+                    0.05 + i * 0.05
+            in
             facet
                 (vec3 a.x a.y a.z)
                 (vec3 b.x b.y b.z)
                 (vec3 c.x c.y c.z)
-                (vec2 0.5 0.85)
-                (vec2 0.666 0.5)
-                (vec2 0.333 0.5)
+                -- (_ left-right index)
+                (vec2 right top)
+                (vec2 mid bottom)
+                (vec2 left top)
         )
         Icosahedron.faces
 
