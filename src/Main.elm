@@ -103,7 +103,7 @@ init _ =
       , settings = settings
       , camera =
             Camera.camera
-                { from = { x = 0, y = 30, z = 20 }
+                { from = { x = 0, y = 24, z = 40 }
                 , to = { x = 0, y = 0, z = 0 }
                 }
       , maybeRaycastResult = Nothing

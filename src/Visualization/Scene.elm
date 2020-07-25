@@ -43,7 +43,7 @@ view : Params a -> Html msg
 view { settings, world, floorOffset, camera, maybeRaycastResult, meshes, texture } =
     let
         lightDirection =
-            Vec3.normalize (Vec3.vec3 -1 -1 -1)
+            Vec3.normalize (Vec3.vec3 -1 -1 -4)
 
         sceneParams =
             { lightDirection = lightDirection
