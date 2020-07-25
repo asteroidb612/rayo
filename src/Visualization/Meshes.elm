@@ -10,6 +10,7 @@ module Visualization.Meshes exposing
     )
 
 import Block3d exposing (Block3d)
+import Icosahedron
 import Length exposing (Meters, inMeters)
 import Math.Vector2 as Vec2 exposing (Vec2, vec2)
 import Math.Vector3 as Vec3 exposing (Vec3, vec3)
@@ -81,72 +82,17 @@ trianglesToLines triangles =
 
 
 block _ =
-    let
-        -- Thanks https://math.stackexchange.com/questions/141751/icosahedron-coordinates !
-        -- purple
-        v0 =
-            t ( -0.262865, 0.0, 0.425325 )
-
-        v1 =
-            t ( 0.262865, 0.0, 0.425325 )
-
-        v2 =
-            t ( -0.262865, 0.0, -0.425325 )
-
-        v3 =
-            t ( 0.262865, 0.0, -0.425325 )
-
-        -- dark
-        v4 =
-            t ( 0.0, 0.425325, 0.262865 )
-
-        v5 =
-            t ( 0.0, 0.425325, -0.262865 )
-
-        v6 =
-            t ( 0.0, -0.425325, 0.262865 )
-
-        v7 =
-            t ( 0.0, -0.425325, -0.262865 )
-
-        -- light
-        v8 =
-            t ( 0.425325, 0.262865, 0.0 )
-
-        v9 =
-            t ( -0.425325, 0.262865, 0.0 )
-
-        v10 =
-            t ( 0.425325, -0.262865, 0.0 )
-
-        v11 =
-            t ( -0.425325, -0.262865, 0.0 )
-
-        t ( a, b, c ) =
-            vec3 a b c
-    in
-    -- Thanks internet http://rbwhitaker.wikidot.com/index-and-vertex-buffers
-    [ facet v0 v6 v1 (vec2 0 0) (vec2 0.5 0.5) (vec2 1 1)
-    , facet v0 v11 v6 (vec2 0 0) (vec2 0.5 0.5) (vec2 1 1)
-    , facet v1 v4 v0 (vec2 0 0) (vec2 0.5 0.5) (vec2 1 1)
-    , facet v1 v8 v4 (vec2 0 0) (vec2 0.5 0.5) (vec2 1 1)
-    , facet v1 v10 v8 (vec2 0 0) (vec2 0.5 0.5) (vec2 1 1)
-    , facet v2 v5 v3 (vec2 0 0) (vec2 0.5 0.5) (vec2 1 1)
-    , facet v2 v9 v5 (vec2 0 0) (vec2 0.5 0.5) (vec2 1 1)
-    , facet v2 v11 v9 (vec2 0 0) (vec2 0.5 0.5) (vec2 1 1)
-    , facet v3 v7 v2 (vec2 0 0) (vec2 0.5 0.5) (vec2 1 1)
-    , facet v3 v10 v7 (vec2 0 0) (vec2 0.5 0.5) (vec2 1 1)
-    , facet v4 v8 v5 (vec2 0 0) (vec2 0.5 0.5) (vec2 1 1)
-    , facet v4 v9 v0 (vec2 0 0) (vec2 0.5 0.5) (vec2 1 1)
-    , facet v5 v8 v3 (vec2 0 0) (vec2 0.5 0.5) (vec2 1 1)
-    , facet v5 v9 v4 (vec2 0 0) (vec2 0.5 0.5) (vec2 1 1)
-    , facet v6 v10 v1 (vec2 0 0) (vec2 0.5 0.5) (vec2 1 1)
-    , facet v6 v11 v7 (vec2 0 0) (vec2 0.5 0.5) (vec2 1 1)
-    , facet v7 v10 v6 (vec2 0 0) (vec2 0.5 0.5) (vec2 1 1)
-    , facet v7 v11 v2 (vec2 0 0) (vec2 0.5 0.5) (vec2 1 1)
-    , facet v8 v10 v3 (vec2 0 0) (vec2 0.5 0.5) (vec2 1 1)
-    , facet v9 v11 v0 (vec2 0 0) (vec2 0.5 0.5) (vec2 1 1)
-    ]
+    List.map
+        (\( a, b, c ) ->
+            facet
+                (vec3 a.x a.y a.z)
+                (vec3 b.x b.y b.z)
+                (vec3 c.x c.y c.z)
+                (vec2 0 0)
+                (vec2 0.5 0.5)
+                (vec2 1 1)
+        )
+        Icosahedron.faces
 
 
 unblock : Block3d Meters BodyCoordinates -> List ( Attributes, Attributes, Attributes )
