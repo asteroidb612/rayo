@@ -19,6 +19,7 @@ import Direction3d
 import Duration
 import Frame3d
 import Html exposing (Html)
+import Html.Attributes
 import Html.Events exposing (onClick)
 import Json.Encode exposing (Value)
 import Length
@@ -317,6 +318,17 @@ view { settings, fps, world, camera, maybeRaycastResult, maybeTexture } =
 
                   else
                     Html.text ""
+                , Html.div
+                    [ onClick Roll
+                    , Html.Attributes.style "position" "absolute"
+                    , Html.Attributes.style "width" "75%"
+                    , Html.Attributes.style "bottom" "2em"
+                    , Html.Attributes.style "background" "white"
+                    , Html.Attributes.style "text-align" "center"
+                    , Html.Attributes.style "font-size" "300%"
+                    , Html.Attributes.style "border-radius" "20px"
+                    ]
+                    [ Html.text "Roll three d20" ]
                 ]
 
 
