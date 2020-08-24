@@ -47,7 +47,6 @@ so that we can later tell which one was selected!
 type Id
     = Mouse
     | Floor
-    | Wall
     | Box Int
 
 
@@ -376,11 +375,6 @@ floor =
         |> Body.plane
         |> Body.moveTo (Point3d.fromMeters floorOffset)
         |> Body.withMaterial (Material.custom { friction = 0.1, bounciness = 0.5 })
-
-
-wall : Body Data
-wall =
-    { id = Wall, meshes = Meshes.fromTriangles [] }
 
 
 {-| One of the boxes on the scene
