@@ -120,7 +120,7 @@ async function main() {
   }
 
   //Roll at random intervals
-  setInterval(roll, 10000 + 5000 * Math.random());
+  //setInterval(roll, 10000 + 5000 * Math.random());
   // Roll on click
   app.ports.roll.subscribe(roll);
 }
