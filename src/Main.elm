@@ -12,6 +12,7 @@ port module Main exposing (main)
 
 import Acceleration
 import Angle
+import AngularSpeed
 import Axis3d
 import Block3d
 import Browser
@@ -32,6 +33,7 @@ import Plane3d
 import Point3d
 import Sphere3d
 import Task
+import Vector3d
 import Visualization.Camera as Camera exposing (Camera)
 import Visualization.Events as Events
 import Visualization.Fps as Fps
@@ -63,6 +65,7 @@ type alias Model =
     , camera : Camera
     , maybeRaycastResult : Maybe (RaycastResult Data)
     , maybeTexture : Maybe Texture
+    , maybeThing : Maybe Float
     }
 
 
@@ -108,6 +111,7 @@ init _ =
                 }
       , maybeRaycastResult = Nothing
       , maybeTexture = Nothing
+      , maybeThing = Nothing
       }
     , Cmd.batch
         [ Events.measureSize Resize
@@ -153,6 +157,15 @@ update msg model =
                 , world =
                     model.world
                         |> World.simulate (Duration.seconds (2 / 60))
+                , maybeThing =
+                    model.world
+                        |> World.bodies
+                        |> List.map Body.angularVelocity
+                        |> List.map Vector3d.length
+                        |> List.map AngularSpeed.inRadiansPerSecond
+                        |> List.sum
+                        |> Debug.log "Tick"
+                        |> Just
               }
             , Cmd.none
             )
